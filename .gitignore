@@ -1,0 +1,33 @@
+*.class
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+target
+target/*
+
+src/main/webapp/web/assets
+src/main/webapp/web/assets/*
+src/main/webapp/files
+src/main/webapp/files/*
+src/main/webapp/web/*.html
+
+
+
+
+node_modules
+.DS_Store
+npm-debug.log
+lerna-debug.log
+npm-debug.log.*
+lerna-debug.log.*
+.npmrc
+coverage
+dist
+
+# Package Files #
+*.war
+*.ear
+.idea
+*.iml
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*

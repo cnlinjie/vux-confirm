@@ -1,0 +1,38 @@
+h1, h2 {
+    font-weight: normal;
+}
+.course-info .img {
+    height: 120px;
+}
+
+.my-weui-panel .weui-panel {
+    background-color: transparent !important;
+}
+.weui-media-box__desc {
+    display:block !important;
+    overflow: auto !important;
+}
+
+.weui-media-box__title {
+    font-size: 14px !important;
+}
+.banner {
+    width: 64%;
+    height: 110px;
+    background: url('../images/banner.png') no-repeat center/100%;
+    text-align: center;
+    margin: 0 auto;
+}
+.rose {
+    background-color: #dd2563;
+}
+.violet{
+    background-color: #704091;
+}
+.blue{
+    background-color: #0081cd;
+}
+.orange {
+    background-color: #ff8500;
+}
+
