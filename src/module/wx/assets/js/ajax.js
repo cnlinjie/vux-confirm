@@ -1,5 +1,4 @@
 import axios from 'axios';
-import Vue from 'vue'
 //判断是否存在指定函数
 function isFunction(funcName) {
     try {
@@ -10,14 +9,14 @@ function isFunction(funcName) {
     }
     return false;
 }
-function _showOrClose (display) {
-    let loading = document.querySelector('#public-loading')
-    if (loading !== null) {
-        loading.style.display = display
-    }
+window._showOrClose = function (display) {
+    // let loading = document.querySelector('#public-loading')
+    // if (loading !== null) {
+    //     loading.style.display = display
+    // }
 }
 
-function _showError (msg) {
+window._showError = function (msg) {
     let error = document.querySelector('#public-error')
     let errorMsg = document.querySelector('#public-error-msg')
     if (error !== null && errorMsg !== null) {

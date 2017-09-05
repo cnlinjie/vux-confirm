@@ -1,18 +1,17 @@
 <template>
-    <div style="margin: 0 auto ; width: 90% ">
-        <div><input  class="ipu" v-model="title"/> <span class="btn">搜索</span></div>
+    <div style="margin: 10px auto ; width: 90% ">
         <div>
-            <scroller ref="scroller" lock-x height="280px">
+            <scroller ref="scroller" lock-x height="340px" >
                 <div class="skycontent">
-                    <div class="list">
-                        <img src="../assets/images/header.jpg" class="img">
-                        <div style="color: #dd2563;">张三为本队捐款1000元</div>
-                        <div>加油！</div>
-                    </div>
-                    <div class="list">
-                        <img src="../assets/images/header.jpg" class="img">
-                        <div>张三邀请你加入他们队伍</div>
-                        <i class="yes rose">同意</i> <i class="no">拒绝</i>
+                    <div class="list" v-for="item in pageData.content">
+                        <img :src="item.headImg" class="img">
+                        <div :class="item.type !== 0 && item.type !== 5 ?'line-height-50':''">{{item.message}}</div>
+                        <div v-if="(item.type === 0 || item.type === 5 ) && item.operation === 0">
+                            <i class="yes rose" @click="agree">同意</i> <i class="no" @click="reject">拒绝</i>
+                        </div>
+                        <div v-if="(item.type === 0 || item.type === 5 ) && item.operation !== 0">
+                            {{item.note}}
+                        </div>
                     </div>
                 </div>
             </scroller>
@@ -26,13 +25,31 @@
         data() {
             return {
                 asyncCount: 0,
-                title:''
+                title:'',
+                pageData: {
+                    content: [],
+                    pageIndex: 1,
+                    pageSize: 10
+                }
             }
         },
         components: {
             Scroller
         },
         methods: {
+            agree(item) {
+                console.log('agree');
+            },
+            reject(item) {
+                console.log('reject');
+            },
+            page() {
+                this.ajax.get('/messages',{},(data) => {
+                    console.log(data);
+                    this.pageData = data;
+                    this.resetScroller();
+                })
+            },
             resetScroller() {
                 this.$nextTick(() => {
                     this.$refs.scroller.reset();
@@ -40,9 +57,7 @@
             }
         },
         mounted() {
-            setTimeout(()=> {
-                this.resetScroller();
-            },1000)
+           this.page();
         }
     }
 
@@ -87,6 +102,7 @@
         font-size: 14px;
     }
     .yes,.no{
+        margin-top: 5px;
         color: rgb(255, 255, 255);
         padding: 3px;
         border-radius: 5px;
@@ -105,6 +121,9 @@
         border-radius: 500px;
         float: left;
         margin-right: 10px;
+    }
+    .line-height-50 {
+        line-height: 50px;
     }
 </style>
 

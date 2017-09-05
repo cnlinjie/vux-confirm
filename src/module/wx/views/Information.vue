@@ -4,7 +4,7 @@
         <img src="../assets/images/header.jpg" class="touxiang ">
         <span style="vertical-align: top;line-height: 78px;font-size: 16px;">微信昵称</span>
             <flexbox style="margin-top: -9px">
-                <flexbox-item v-for="item in list">
+                <flexbox-item v-for="item in list" :key="item">
                     <router-link :to="item.href" class="flex-demo">{{item.title}}</router-link>
                 </flexbox-item>
             </flexbox>

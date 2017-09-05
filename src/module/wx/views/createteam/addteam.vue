@@ -1,14 +1,15 @@
 <template>
     <div style="margin: 0 auto ; width: 90% ">
         <div class="banner"></div>
-        <div><input  class="ipu" v-model="title"/> <span class="btn">搜索</span></div>
+        <div><input class="ipu" v-model="keyword" placeholder="姓名、昵称、身份证号"/> <span class="btn" @click="serach">搜索</span>
+        </div>
         <div>
             <scroller ref="scroller" lock-x height="350px">
                 <div class="skycontent">
-                     <div class="list" v-for="n in 10">
+                    <div class="list" v-for="item in pageData.content" :key="item.id">
                         <img src="../../assets/images/header.jpg" class="img">
                         <div>张三2</div>
-                        <router-link to="" class="button">&nbsp;&nbsp;邀请&nbsp;&nbsp;</router-link>
+                        <div class="button">&nbsp;&nbsp;邀请&nbsp;&nbsp;</div>
                     </div>
                 </div>
             </scroller>
@@ -23,13 +24,31 @@
         data() {
             return {
                 asyncCount: 0,
-                title:''
+                keyword: '',
+                pageData: {
+                    content: [],
+                    pageIndex: 1,
+                    pageSize: 10
+                }
             }
         },
         components: {
             Scroller
         },
         methods: {
+            serach() {
+                if (this.keyword === '') {
+                    _showError('请输入您需要查找的关键字')
+                    return;
+                }
+                this.ajax.get('/users/search', {keyword: this.keyword}, (data) => {
+                    if (data.content.length === 0) {
+                        _showError('没有您要找的人')
+                    } else {
+                        this.pageData = data;
+                    }
+                });
+            },
             resetScroller() {
                 this.$nextTick(() => {
                     this.$refs.scroller.reset();
@@ -40,32 +59,35 @@
             }
         },
         mounted() {
-            setTimeout(()=> {
+            setTimeout(() => {
                 this.resetScroller();
-            },1000)
+            }, 500)
         }
     }
 
 
 </script>
 <style scoped>
-    .donation{
+    .donation {
         width: 30%;
-        background-color:#704091;
+        background-color: #704091;
         color: #fff;
         font-size: 18px;
         border-radius: 5px;
         text-align: center;
         padding: 5px;
     }
-    .ipu{
-        width: 70%;
+
+    .ipu {
+        width: 60%;
         height: 30px;
         border-radius: 3px;
         border: 1px solid #704091;
         background-color: transparent;
+        padding-left: 10px;
     }
-    .btn{
+
+    .btn {
         width: 22%;
         height: 30px;
         line-height: 30px;
@@ -78,20 +100,22 @@
         color: #fff;
         margin-left: 10px;
     }
-    .list{
 
-        border-bottom: 1px solid rgba(112,65,145,.3);
+    .list {
+
+        border-bottom: 1px solid rgba(112, 65, 145, .3);
         height: 50px;
         margin-top: 10px;
         font-size: 14px;
         padding-bottom: 5px;
 
-
     }
+
     .skycontent {
         font-size: 18px;
     }
-    .yes,.no{
+
+    .yes, .no {
         color: rgb(255, 255, 255);
         padding: 3px;
         border-radius: 5px;
@@ -100,9 +124,11 @@
         font-style: normal;
         display: inline-block;
     }
+
     .no {
         background-color: #586c94;
     }
+
     .img {
         width: 45px;
         height: 45px;
@@ -110,7 +136,8 @@
         float: left;
         margin-right: 10px;
     }
-    .button{
+
+    .button {
         background-color: #dd2563;
         color: #fff;
         border-radius: 5px;
@@ -118,11 +145,12 @@
         float: right;
         padding: 3px;
     }
+
     .next {
         width: 50%;
-        margin: 20px  auto;
+        margin: 20px auto;
         background-color: #704091;
-        font-size: 14px;
+        font-size: 12px;
         border-radius: 5px;
         text-align: center;
         padding: 5px;

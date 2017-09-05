@@ -2,6 +2,10 @@
     <div id="app">
         <div class="content">
             <div class="logo"> </div>
+            <div id="public-error" class="weui-toast weui-toast_text" style="width: 10em;  display: none">
+                <p class="weui-toast__content" id="public-error-msg"></p>
+            </div>
+
             <router-view></router-view>
         </div>
 
@@ -9,19 +13,20 @@
 </template>
 
 <script>
-    import { ViewBox } from 'vux'
+    import { ViewBox,Toast } from 'vux'
     import { mapActions, mapGetters } from "vuex"
     export default {
         name: 'app',
         components: {
-            ViewBox
+            ViewBox,Toast
+        },
+        computed: {
         },
         methods: {
-           
+            ...mapActions(['setUser'])
         },
         mounted() {
-            
-
+            this.setUser();
         }
 
     }

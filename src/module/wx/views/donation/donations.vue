@@ -9,7 +9,7 @@
         </flexbox>
         <div class="hahahah">
             <scroller ref="scroller" lock-x height="280px" >
-                <flexbox v-for="item in list" >
+                <flexbox v-for="item in list"  :key="item">
                     <flexbox-item ><div class="demo">{{item.name}}</div></flexbox-item>
                     <flexbox-item ><div class="demo">{{item.money}}</div></flexbox-item>
                     <flexbox-item ><div class="demo" >{{item.time}}</div></flexbox-item>

@@ -25,6 +25,7 @@ import addteam from '../views/createteam/addteam'
 import selectteam from '../views/createteam/selectteam'
 import createteamok from '../views/createteam/createteamok'
 import teanmoney from '../views/createteam/teanmoney'
+import reg from '../views/reg'
 
 Vue.use(Router);
 export default new Router({
@@ -57,6 +58,7 @@ export default new Router({
         {path: '/addteam',component: addteam},
         {path: '/selectteam',component: selectteam},
         {path: '/createteamok',component: createteamok},
+        {path: '/reg',component: reg},
 
     ]
 })

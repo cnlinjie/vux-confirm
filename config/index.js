@@ -26,8 +26,8 @@ const indexConfig = {
         autoOpenBrowser: false,
         assetsSubDirectory: '/assets/',
         assetsPublicPath: '/',
-        proxyHost: 'http://192.168.31.70:8080',
-        proxyApis: ['/ueditor', '/files', '/upload', '/admin/*', '/org/*',  '/wx/*'],
+        proxyHost: 'http://192.168.31.70:8081',
+        proxyApis: ['/ueditor', '/files', '/upload',  '/wx/*'],
 
         // CSS Sourcemaps off by default because relative paths are "buggy"
         // with this option, according to the CSS-Loader README

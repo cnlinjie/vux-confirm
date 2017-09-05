@@ -6,7 +6,7 @@
         </div>
         <div class="run">
             <div  class="run-box">
-                <router-link to="/Information"  class="run-a rose">
+                <router-link :to="teamUrl"  class="run-a rose">
                     <i class="run-i" >我的队伍</i>
                 </router-link>
             </div>
@@ -44,6 +44,7 @@
 
 <script >
     import { Swiper,MarqueeItem,Marquee} from 'vux'
+    import {isNull} from '../assets/js/verification'
     import { mapActions, mapGetters } from "vuex"
     const baseList = [{
         url: 'javascript:',
@@ -77,7 +78,16 @@
                 ots: 40
             }
         },
+
         computed: {
+            teamUrl() {
+                if (isNull(this.user)  ||  isNull(this.user.teamId)) {
+                    return '/createteam';
+                } else {
+                    return '/teanmoney';
+                }
+
+            },
             naStyle () {
                 let str = `translateX(${-this.tx}px)`;
                 let obj = {
@@ -90,7 +100,8 @@
                     obj.transition = `transform ${this.ts}ms linear`
                 }
                 return obj
-            }
+            },
+            ...mapGetters(['user'])
         },
         methods: {
             demo01_onIndexChange (index) {
