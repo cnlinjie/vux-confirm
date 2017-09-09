@@ -39,16 +39,6 @@ module.exports = Merge(BaseWebpackConfig, {
             exclude: [/\.min\.js$/gi] // skip pre-minified libs
         }),
 
- /*
-
-         // 清理目录
-        new CleanWebpackPlugin(
-            ['dist'], {
-                root: rootDirname
-            }
-        ),
-
-*/
         // 优化
         new webpack.optimize.OccurrenceOrderPlugin(),
         // 提取公告css
@@ -82,9 +72,6 @@ if (config.build.bundleAnalyzerReport) {
 }
 
 let pages = utils.getEntry(['./src/module/*.html','./src/module/**/*.html']);
-console.log("------------------------------");
-console.log(pages);
-console.log("------------------------------");
 
 for (let pathname in pages) {
     // 配置生成的html文件，定义路径等

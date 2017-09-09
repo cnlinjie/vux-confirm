@@ -38,30 +38,5 @@ const indexConfig = {
     }
 }
 
-let proxyTable = {}
-indexConfig.dev.proxyApis.forEach(value => {
-
-    proxyTable[value] = {
-        target: indexConfig.dev.proxyHost,
-        changeOrigin: true
-    }
-
-    for (let i = 0; i < 20; i++) {
-        value += '/*'
-        proxyTable[value] = {
-            target: indexConfig.dev.proxyHost,
-            changeOrigin: true
-        }
-    }
-
-})
-
-// proxyTable['/admin/*'] =  {
-//     target: indexConfig.dev.proxyHost,
-//     changeOrigin: true,
-//     '^/admin/*':'/admin/*'
-// };
-
-indexConfig.dev.proxyTable = proxyTable
 
 module.exports = indexConfig

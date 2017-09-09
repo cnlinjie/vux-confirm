@@ -1,13 +1,10 @@
 let path = require('path')
 let webpack = require('webpack');
-let ExtractTextPlugin = require("extract-text-webpack-plugin");
 let url = require('url');
 let utils = require('./utils');
 let config = require('../config');
 let glob = require('glob');
 let vuxLoader = require('vux-loader')
-let entries = utils.getEntryJs(['./src/module/*.js', './src/module/*/*.js']); // 获得入口js文件
-entries["vendor"] = ['./src/assets/js/vendor'];
 let isProd = process.env.NODE_ENV === 'production';
 
 function resolve(dir) {
@@ -16,7 +13,7 @@ function resolve(dir) {
 
 
 let webpackBaseConf = {
-    entry: entries,
+    entry: { 'main': [ 'babel-polyfill', './src/main.js' ] },
     output: {
         // 输出的JS文件位置
         path: config.build.assetsRoot + (isProd ? config.build.assetsPublicPath : '' ),
@@ -106,8 +103,7 @@ let webpackBaseConf = {
             '@': resolve('src'),
             'src': resolve('src'),
             '@admin': resolve('src/module/admin'),
-            'assets': resolve('src/assets'),
-            'baseURL':'http://192.168.31.70'
+            'assets': resolve('src/assets')
         }
     }
 }
