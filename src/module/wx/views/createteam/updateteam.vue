@@ -1,35 +1,23 @@
 <template>
-    <div style="width: 90%; margin: 0 auto">
+    <div style="width: 90%; margin: 20px auto">
         <span style="vertical-align: top;line-height: 70px;font-size: 14px;color: #704091;">队伍头像：</span>
         <img :src="team.headImg" @click="updateHeadImg" class="touxiang ">
         <div class="msg"><span>队伍名称：</span> <input v-model="team.name"/>
         </div>
         <div class="msg"><span>队伍口号：</span> <input v-model="team.slogan"/>
         </div>
-        <div class="msg"><span>筹款目标：</span> <input v-model="team.target"/>
-            <i class="error">*筹款目标不得低于400元，若未填写则默认400元</i>
-        </div>
-        <div style="font-size: 14px;color: rgba(0, 0, 0, .7);;
-    border: 1px dashed #704091; padding: 10px;">
-            <div style="color:#f32c2c;font-size: 14px;">友情提示：</div>
-            <div>1: 建队成功后，队长不得更换；<i style="color:#f32c2c;font-style: normal"> 除非解散队伍</i></div>
-            <div>2: 规定期间内，队长可更换同组队员，但须成员同意，
-                逾期系统将无法进行“队员更换操作”
-            </div>
-            <div>3：队伍需在组队完成后缴交200元押金队伍才算真正成立,方可进行募捐</div>
-        </div>
-        <div class="button" @click="save">提交</div>
+        <div class="button" @click="save">确认修改</div>
     </div>
 
 
 </template>
 <script>
-    import { mapActions, mapGetters } from "vuex"
-    import {info, reg,isNull} from '../../assets/js/verification'
-    import { go, getUrl } from 'vux/src/libs/router'
+    import {mapActions, mapGetters} from "vuex"
+    import {info, reg, isNull} from '../../assets/js/verification'
     import {wxJsSDKInit} from '../../assets/js/wx'
-    import { WechatPlugin } from 'vux'
-    let  wx = WechatPlugin.$wechat;
+    import {go, getUrl} from 'vux/src/libs/router'
+    import {WechatPlugin} from 'vux'
+    let wx = WechatPlugin.$wechat;
     export default {
         components: {},
         data () {
@@ -44,9 +32,13 @@
         },
         computed: {},
         methods: {
-
+            getTeam() {
+                this.ajax.get('/my/team', {}, (data) => {
+                    this.team = data.team;
+                });
+            },
             updateHeadImg() {
-                let  _this = this;
+                let _this = this;
                 wx.chooseImage({
                     count: 1, // 默认9
                     sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
@@ -57,10 +49,11 @@
                     }
                 });
             },
+
             uploadImageToWeixin(localIds) {
-                let  _this = this;
+                let _this = this;
                 wx.uploadImage({
-                    localId: ''+localIds+'', // 需要上传的图片的本地ID，由chooseImage接口获得
+                    localId: '' + localIds + '', // 需要上传的图片的本地ID，由chooseImage接口获得
                     isShowProgressTips: 1, // 默认为1，显示进度提示
                     success: function (res) {
                         let serverId = res.serverId; // 返回图片的服务器端ID
@@ -70,19 +63,14 @@
             },
 
             uploadImageToServer(serverId) {
-                let  _this = this;
-                this.ajax.postForm('/upload/upload-weixin-file?serverId='+serverId,{},(data)=> {
-                    alert(data);
+                let _this = this;
+                this.ajax.postForm('/upload/upload-weixin-file?serverId=' + serverId, {}, (data) => {
                     _this.team.headImg = data;
                 })
             },
 
             save() {
                 let team = this.team;
-                if (team.target < 400) {
-                    _showError('筹款目标必须大于400哦')
-                    return;
-                }
                 if (team.name === '') {
                     _showError('队伍名称不能为空哦')
                     return;
@@ -91,20 +79,17 @@
                     _showError('口号不能为空哦')
                     return;
                 }
-                this.ajax.postForm('/teams', team, (data) => {
-                    _showError('创建成功,请选择方阵');
-                    go('/selectteam', this.$router);
-                },(err) => {
-                    if(err.msg === '请完善您的资料' || err.msg === '请填写正确的手机号') {
-                        go('/personaldata', this.$router);
-                    }
+                this.ajax.postForm('/teams/update', team, (data) => {
+                    _showError('修改成功 ');
+                    go('/teanmoney', this.$router);
                 })
             },
-            ...mapActions(['setTeamActive'])
+            ...mapActions(['setActive'])
         },
         mounted() {
-            wxJsSDKInit(wx)
-            this.setTeamActive('create')
+            wxJsSDKInit(wx);
+            this.getTeam();
+            this.setActive('team')
         },
 
     }

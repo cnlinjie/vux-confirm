@@ -1,6 +1,5 @@
 import Vue from 'vue'
 
-let vue = new Vue()
 
 const reg = {
 	"nickname": /^[\u4e00-\u9fa5_a-zA-Z0-9]*$/, // 昵称 由 3 ~ 12 位字符的汉字、字母、数字、下划线组成，一个汉字占两个字符

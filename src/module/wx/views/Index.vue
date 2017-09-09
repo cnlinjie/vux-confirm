@@ -1,13 +1,13 @@
 <template>
     <div>
-        <swiper :list="demo01_list" v-model="demo02_index" @on-index-change="demo01_onIndexChange" :auto="true" style="height: 100px;" ></swiper>
+        <swiper :list="demo01_list" v-model="demo02_index" @on-index-change="demo01_onIndexChange" :auto="true" style="height: 120px;" ></swiper>
         <div class="log">
             <div class="img"></div>
         </div>
         <div class="run">
             <div  class="run-box">
                 <router-link :to="teamUrl"  class="run-a rose">
-                    <i class="run-i" >我的队伍</i>
+                    <i class="run-i" >{{teamText}}</i>
                 </router-link>
             </div>
             <div  class="run-box">
@@ -16,7 +16,7 @@
                 </router-link>
             </div>
             <div  class="run-box">
-                <router-link to="love"  class="run-a blue">
+                <router-link to="team"  class="run-a blue">
                     <i class="run-i" >爱心榜单</i>
                 </router-link>
             </div>
@@ -28,13 +28,24 @@
 
         </div>
         <div class="count">
-            <div class="count-q">报名：</div><div class="count-q">哈哈哈：</div>
-            <div class="count-q">哈哈哈：</div><div class="count-q">哈哈哈：</div>
+            <div class="count-q">健行时间:2017-12-2</div><div class="count-q">报名队伍:0 队</div>
+            <div class="count-q">活动倒计时:100天</div><div class="count-q">筹集善款:0 元</div>
+        </div>
+        <div>
+
         </div>
         <div>
             <ul class="textContent" ref="noticeBox" >
                 <li ref="noticeLi">
-                    <a class="notice-a" ref="noticeA" :style="naStyle">厦门太古可口可乐有限公司</a>
+                    <a class="notice-a" ref="noticeA" :style="naStyle">
+
+                        <img src="../assets/images/zanzhu/1.png" style="height: 18px;margin-left: 10px;"/>
+                        <img src="../assets/images/zanzhu/6.png" style="height: 18px;margin-left: 10px;"/>
+                        <img src="../assets/images/zanzhu/2.png" style="height: 18px;margin-left: 10px;"/>
+                        <img src="../assets/images/zanzhu/3.png" style="height: 18px;margin-left: 10px;"/>
+                        <img src="../assets/images/zanzhu/4.png" style="height: 18px;margin-left: 10px;"/>
+                        <img src="../assets/images/zanzhu/5.png" style="height: 18px;margin-left: 10px;"/>
+                    </a>
                 </li>
             </ul>
         </div>
@@ -46,18 +57,25 @@
     import { Swiper,MarqueeItem,Marquee} from 'vux'
     import {isNull} from '../assets/js/verification'
     import { mapActions, mapGetters } from "vuex"
+
+
+
     const baseList = [{
         url: 'javascript:',
-        img: 'https://static.vux.li/demo/1.jpg',
-        title: '送你一朵fua'
-    }, {
+        img: '/files/default/video.jpg',
+        title: '一路悦纯'
+    },{
         url: 'javascript:',
-        img: 'https://static.vux.li/demo/2.jpg',
-        title: '送你一辆车'
-    }, {
+        img: '/files/default/video2.png',
+        title: '一路悦纯'
+    },{
         url: 'javascript:',
-        img: 'https://static.vux.li/demo/3.jpg',
-        title: '送你一次旅行'
+        img: '/files/default/video3.png',
+        title: '一路悦纯'
+    },{
+        url: 'javascript:',
+        img: '/files/default/video4.png',
+        title: '一路悦纯'
     }];
     const urlList = baseList.map((item, index) => ({
         url: 'http://m.baidu.com',
@@ -80,13 +98,21 @@
         },
 
         computed: {
-            teamUrl() {
+            teamText () {
                 if (isNull(this.user)  ||  isNull(this.user.teamId)) {
-                    return '/createteam';
+                    return '我要报名';
+                } else {
+                    return '我的队伍';
+                }
+            },
+            teamUrl() {
+                if (isNull(this.user) || isNull(this.user.realname)) {
+                    return '/statement';
+                }   else if (isNull(this.user)  ||  isNull(this.user.teamId)) {
+                    return '/personaldata';
                 } else {
                     return '/teanmoney';
                 }
-
             },
             naStyle () {
                 let str = `translateX(${-this.tx}px)`;
@@ -146,16 +172,17 @@
                         }
                     }, this.ots)
                 }
-            }
+            },
+            ...mapActions(['setUser'])
         },
         mounted() {
+            this.setUser();
             this.mqSi = setInterval(() => {
                 this.marquee()
             }, this.ts);
         },
-        destroyed () {
-            clearTimeout(this.timer);
-            clearInterval(this.mqSi)
+        beforeDestroy() {
+            clearInterval(this.mqSi);
         }
     }
 </script>
@@ -175,11 +202,11 @@
     .log {
         margin-top: 10px;
         width: 100% ;
-        height:100px;
+        height:80px;
         overflow:hidden;
     }
     .log .img{
-        width: 54%;
+        width: 44%;
         margin: 0 auto;
         height: 100%;
         background:url('../assets/images/banner.png') no-repeat center/100%;
@@ -196,7 +223,7 @@
         height: 30px;
         line-height: 30px;
         position: absolute;
-        bottom: 0px;
+        bottom: 0;
         width: 100%;
         background-color: rgba(255, 255, 255, 0.48);
     }
@@ -214,7 +241,7 @@
         width: 50% ;
         float: left;
         text-align: center;
-        margin-bottom: 10px;
+        margin-bottom: 20px;
     }
     .run-a{
         border-radius: 50%;
@@ -230,26 +257,26 @@
         width: 59px;
         display: inline-block;
         letter-spacing: 9px;
+        font-size: 20px;
         color: #fff;
         font-style:normal
     }
     .count {
-        width: 80%;
-        height:50px;
+        width: 90%;
+        height:60px;
         position: absolute;
-        left: 10%;
+        left: 5%;
         bottom: 60px;
         background-color: rgba(255, 255, 255, 0.33);
 
     }
     .count-q{
-        width: 40% ;
+        width: 42% ;
         float: left;
         text-align: left;
         padding-left: 20px;
-        line-height: 25px;
-        text-align: center;
-        font-size: 15px;
+        line-height: 30px;
+        font-size: 14px;
     }
 
 </style>

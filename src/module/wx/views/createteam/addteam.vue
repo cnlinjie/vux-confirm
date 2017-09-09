@@ -1,42 +1,71 @@
 <template>
     <div style="margin: 0 auto ; width: 90% ">
         <div class="banner"></div>
-        <div><input class="ipu" v-model="keyword" placeholder="姓名、昵称、身份证号"/> <span class="btn" @click="serach">搜索</span>
+        <div class="sky violet" style="margin-top: 10px; font-size: 16px; text-align: left;">
+            <div style=" margin-left: 5px; ">队伍信息 - 邀请队员</div>
+
+        </div>
+        <div><input class="ipu" v-model="keyword" placeholder="姓名、昵称、身份证号"/> <span class="btn" @click="search">搜索</span>
         </div>
         <div>
             <scroller ref="scroller" lock-x height="350px">
                 <div class="skycontent">
-                    <div class="list" v-for="item in pageData.content" :key="item.id">
-                        <img src="../../assets/images/header.jpg" class="img">
-                        <div>张三2</div>
-                        <div class="button">&nbsp;&nbsp;邀请&nbsp;&nbsp;</div>
+                    <div class="list" v-for="item in list" :key="item.id">
+                        <img :src="item.headImg" class="img">
+                        <div style="line-height: 45px;">
+                            {{item.realname}}
+                            <div class="button" @click="invite(item)" v-show="item.delStatus === 'ACTIVE'">
+                                &nbsp;&nbsp;邀请&nbsp;&nbsp;
+                            </div>
+                        </div>
                     </div>
                 </div>
             </scroller>
         </div>
-        <div class="next" @click="next">下一步</div>
+        <!--<div class="next" @click="next">下一步</div>-->
     </div>
 </template>
 <script>
+    import {mapActions, mapGetters} from "vuex"
     import {Scroller} from 'vux'
+    import {go, getUrl} from 'vux/src/libs/router'
+    import {info, reg, isNull} from '../../assets/js/verification'
 
     export default {
         data() {
             return {
                 asyncCount: 0,
-                keyword: '',
+                keyword: '测试',
+                list: [],
                 pageData: {
                     content: [],
                     pageIndex: 1,
                     pageSize: 10
-                }
+                },
+                isSend: false,
             }
         },
         components: {
             Scroller
         },
         methods: {
-            serach() {
+
+            invite(item) {
+                if (this.isSend) {
+                    _showError('处理中,请稍等')
+                    return;
+                }
+                this.isSend = true;
+                this.ajax.postForm('/messages/invite-join', {userId: item.id}, (data) => {
+                    _showError('邀请已发送')
+                    item.delStatus = 'send';
+                    this.isSend = false;
+                }, (err) => {
+                    this.isSend = false;
+                })
+            },
+            search() {
+
                 if (this.keyword === '') {
                     _showError('请输入您需要查找的关键字')
                     return;
@@ -45,7 +74,9 @@
                     if (data.content.length === 0) {
                         _showError('没有您要找的人')
                     } else {
+                        this.list = data.content;
                         this.pageData = data;
+                        this.resetScroller();
                     }
                 });
             },
@@ -56,18 +87,26 @@
             },
             next () {
                 this.$router.push('/selectteam')
-            }
+            },
+            getUser() {
+                this.ajax.get('/my/user', {}, (data) => {
+                    if (isNull(data) || isNull(data.teamId)) {
+                        go('/createteam', this.$router);
+                    }
+                });
+            },
+            ...mapActions(['setActive'])
         },
         mounted() {
-            setTimeout(() => {
-                this.resetScroller();
-            }, 500)
+            this.getUser();
+            this.setActive('team')
         }
     }
 
 
 </script>
 <style scoped>
+
     .donation {
         width: 30%;
         background-color: #704091;
@@ -102,9 +141,8 @@
     }
 
     .list {
-
         border-bottom: 1px solid rgba(112, 65, 145, .3);
-        height: 50px;
+        height: 55px;
         margin-top: 10px;
         font-size: 14px;
         padding-bottom: 5px;
@@ -113,20 +151,6 @@
 
     .skycontent {
         font-size: 18px;
-    }
-
-    .yes, .no {
-        color: rgb(255, 255, 255);
-        padding: 3px;
-        border-radius: 5px;
-        width: 50px;
-        text-align: center;
-        font-style: normal;
-        display: inline-block;
-    }
-
-    .no {
-        background-color: #586c94;
     }
 
     .img {
@@ -143,7 +167,10 @@
         border-radius: 5px;
         text-align: center;
         float: right;
-        padding: 3px;
+        line-height: 28px;
+        margin-top: 15px;
+        margin-right: 15px;
+        width: 60px;
     }
 
     .next {

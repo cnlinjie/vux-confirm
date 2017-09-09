@@ -53,15 +53,8 @@
 
 
 </script>
-<style>
-    .sky {
-        margin: 0 auto;
-        text-align: center;
-        color: #fff;
-        font-size: 16px;
-        margin-bottom: 10px;
-        padding: 5px;
-    }
+<style scoped>
+
     .flex-demo, .demo {
         text-align: center;
         color: #704091;

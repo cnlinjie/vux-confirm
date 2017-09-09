@@ -1,6 +1,5 @@
 <template>
     <div style="margin: 0 auto ; width: 90% ">
-        <loading :show="loading" :text="loadingText"></loading>
         <div><input  class="ipu" v-model="title"/> <span class="btn" @click="search">搜索</span></div>
         <div>
             <scroller ref="scroller" lock-x >
@@ -9,7 +8,7 @@
                         <img :src="item.headImg" class="img">
                         <div>名称： {{item.name}}</div>
                         <div>口号： {{item.slogan}} </div>
-                        <div  class="button" @click="join(item)" v-show="!item.isSend">我要加入</div>
+                        <div  class="button" @click="join(item)" v-show="item.delStatus === 'ACTIVE'">我要加入</div>
                     </div>
                 </div>
             </scroller>
@@ -19,7 +18,8 @@
 </template>
 <script>
     import {Scroller,Loading} from 'vux'
-
+    import {mapActions, mapGetters} from "vuex"
+    import { go, getUrl } from 'vux/src/libs/router'
     export default {
         data() {
             return {
@@ -27,7 +27,8 @@
                 loadingText:'申请中',
                 asyncCount: 0,
                 title:'测试',
-                list:[]
+                list:[],
+                isSend: false,
             }
         },
         components: {
@@ -40,8 +41,6 @@
                     return;
                 }
                 this.ajax.get('/teams',{name:this.title},(data) => {
-                    console.log(data);
-
                     if(data.length === 0) {
                         _showError('没有您要找的队伍');
                     } else {
@@ -51,13 +50,21 @@
                 });
             },
             join(item) {
-                this.loading = true;
+                if (this.isSend) {
+                    _showError('处理中,请稍等')
+                    return;
+                }
+                this.isSend = true;
                 this.ajax.postForm('/messages/apply-join',{teamId:item.id},(data)=>{
-                    _showError('申请已发送')
-                    this.loading = false;
-                    item.isSend = true;
+                    _showError('申请已发送');
+                    item.delStatus = "send";
+                    this.isSend = false;
                 },(err)=>{
-                    this.loading = false;
+                    item.delStatus = "send";
+                    this.isSend = false;
+                    if (err.msg === '请完善您的资料') {
+                        go('/personaldata', this.$router);
+                    }
                 });
 
             },
@@ -66,8 +73,11 @@
                     this.$refs.scroller.reset();
                 })
             }
+            , ...mapActions(['setActive','setTeamActive'])
         },
         mounted() {
+            this.setActive('team')
+            this.setTeamActive('join')
         }
     }
 
@@ -90,6 +100,7 @@
         border: 1px solid #704091;
         background-color: transparent;
         padding-left: 10px;
+        font-size: 15px;
     }
     .btn{
         width: 22%;
@@ -131,10 +142,5 @@
         margin-right: 10px;
     }
 
-    .weui-toast {
-        width: 120px !important;
-        height: 120px !important;
-        min-height:120px !important;
-    }
 </style>
 

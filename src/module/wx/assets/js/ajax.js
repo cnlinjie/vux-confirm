@@ -24,7 +24,7 @@ window._showError = function (msg) {
         errorMsg.textContent = msg
         setTimeout(function () {
             error.style.display  = 'none'
-        },1000)
+        },2000)
     }
 }
 
@@ -33,7 +33,7 @@ let ajax = {
         _showOrClose('')
         return axios.get(url, {params:config}).then(res => {
             _showOrClose('none')
-            if (res.data.code != 0) {
+            if (res.data.code !== 0) {
                 _showError(res.data.msg)
                 if (isFunction(error)) {
                     error(res.data);
@@ -60,7 +60,7 @@ let ajax = {
         }
         return axios.post(url, params).then(res => {
             _showOrClose('none')
-            if (res.data.code != 0) {
+            if (res.data.code !== 0) {
                 _showError(res.data.msg)
                 if (isFunction(error)) {
                     error(res.data);
@@ -83,7 +83,7 @@ let ajax = {
 
         return axios.post(url, config).then(res => {
             _showOrClose('none')
-            if (res.data.code != 0) {
+            if (res.data.code !== 0) {
                 _showError(res.data.msg)
                 if (isFunction(error)) {
                     error(res.data);

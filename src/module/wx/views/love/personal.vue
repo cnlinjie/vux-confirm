@@ -1,45 +1,74 @@
 <template>
     <div>
-        <div><input  class="ipu" v-model="title"/> <span class="btn rose">搜索</span></div>
+        <div><input  class="ipu" v-model="search.keyword"/> <span class="btn rose" @click="doSearch">搜索</span></div>
         <div v-i="">
-            <scroller ref="scroller" lock-x height="280px">
+            <x-scroller  height="300px" @on-load-data="onLoad" ref="scroller">
                 <div class="skycontent">
-                    <div class="list">
-                        <img src="../../assets/images/header.jpg" class="img">
-                        <div>名称： 哈哈哈</div>
-                        <div>已募捐： 哈哈哈 </div>
+                    <div v-show="content.length <= 0" style="text-align: center; line-height: 50px;font-size: 13px;">没有数据</div>
+                    <div class="list" v-for="item in content">
+                        <img :src="item.headImg" class="img">
+                        <div>名称： {{item.nickname}}</div>
+                        <div>已捐款： {{item.donationTotal}} </div>
                     </div>
                 </div>
-            </scroller>
+            </x-scroller>
+
+
         </div>
-        <div style="font-size: 14px;">找不到个人募捐信息</div>
 
     </div>
 </template>
 <script>
     import {Scroller} from 'vux'
-
+    import XScroller from '../../components/XScroller'
+    import { mapActions, mapGetters } from "vuex"
     export default {
         data() {
             return {
                 asyncCount: 0,
-                title:''
+                title:'',
+                content:[],
+                search:{
+                    keyword:'',
+                    pageIndex:0,
+                    pageSize:10,
+                }
             }
         },
         components: {
-            Scroller
+            Scroller,XScroller
         },
         methods: {
+            doSearch() {
+                this.content = [];
+                this.search.pageIndex = 0;
+                this.page();
+            },
+            page(done) {
+                this.search.pageIndex++;
+                this.ajax.get('/users/top-search',this.search,(data) => {
+                    if (data.content.length === 0) {
+                        this.search.pageIndex--;
+                    } else {
+                        this.content.push(...data.content);
+                    }
+                    done();
+                    this.resetScroller();
+                });
+            },
             resetScroller() {
                 this.$nextTick(() => {
-                    this.$refs.scroller.reset();
+                    this.$refs.scroller.resetScroller();
                 })
-            }
+            },
+            onLoad(done) {
+                this.page(done);
+            },
+            ...mapActions(['setLoveActive'])
         },
         mounted() {
-            setTimeout(()=> {
-                this.resetScroller();
-            },1000)
+            this.page();
+            this.setLoveActive('personal')
         }
     }
 
@@ -47,11 +76,13 @@
 </script>
 <style scoped>
     .ipu{
-        width: 70%;
+        width: 60%;
         height: 30px;
         border-radius: 3px;
         border: 1px solid #704091;
         background-color: transparent;
+        font-size: 15px;
+        padding-left: 15px;
     }
     .btn{
         width: 22%;
@@ -77,7 +108,6 @@
         margin-top: 10px;
         font-size: 14px;
         padding-bottom: 5px;
-
     }
     .skycontent div{
         font-size: 14px;

@@ -81,6 +81,12 @@ window.str2Date = function(strDate) {
     var a = st.split(" ");
     var b = a[0].split("-");
     var c = a[1].split(":");
+    console.log(b[0]);
+    console.log(b[1]);
+    console.log(b[2]);
+    console.log( c[0]);
+    console.log(c[1]);
+    console.log(c[2]);
     var date = new Date(b[0], b[1]-1, b[2], c[0], c[1], c[2]);
     return date;
 }
@@ -114,3 +120,48 @@ window.removeHTMLTag = function (str) {
     str = str.replace(/&nbsp;/ig, '')//去掉&nbsp;
     return str
 }
+
+window.getTopicTypeCN = function (es) {
+    if (es === 'TF') {
+        return '判断题';
+    } else if (es === 'Single') {
+        return '单选题';
+    } else if (es === 'Multi') {
+        return '多选题';
+    } else if (es === 'Blank') {
+        return '填空题';
+    } else if (es === 'Sketch') {
+        return '简述题';
+    } else if (es === 'Expound') {
+        return '论述题';
+    } else {
+        return '其他'
+    }
+}
+
+
+
+Date.prototype.Format = function (fmt) {
+    var o = {
+        "M+": this.getMonth() + 1, //月份
+        "d+": this.getDate(), //日
+        "H+": this.getHours(), //小时
+        "m+": this.getMinutes(), //分
+        "s+": this.getSeconds(), //秒
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+        "S": this.getMilliseconds() //毫秒
+    };
+    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (var k in o)
+        if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    return fmt;
+}
+
+window.dateFormat = function (date) {
+    if (date === '' || date === null || date === undefined) {
+        return null;
+    }
+    return date.Format('yyyy-MM-dd HH:mm:ss');
+
+}
+

@@ -1,13 +1,13 @@
 <template>
     <div style="margin: 10px auto ; width: 90% ">
         <div>
-            <scroller ref="scroller" lock-x height="340px" >
+            <scroller ref="scroller" lock-x height="-230">
                 <div class="skycontent">
                     <div class="list" v-for="item in pageData.content">
                         <img :src="item.headImg" class="img">
                         <div :class="item.type !== 0 && item.type !== 5 ?'line-height-50':''">{{item.message}}</div>
                         <div v-if="(item.type === 0 || item.type === 5 ) && item.operation === 0">
-                            <i class="yes rose" @click="agree">同意</i> <i class="no" @click="reject">拒绝</i>
+                            <i class="yes rose" @click="agree(item)">同意</i> <i class="no" @click="reject(item)">拒绝</i>
                         </div>
                         <div v-if="(item.type === 0 || item.type === 5 ) && item.operation !== 0">
                             {{item.note}}
@@ -20,17 +20,18 @@
 </template>
 <script>
     import {Scroller} from 'vux'
-
+    import {mapActions, mapGetters} from "vuex"
     export default {
         data() {
             return {
                 asyncCount: 0,
-                title:'',
+                title: '',
                 pageData: {
                     content: [],
                     pageIndex: 1,
                     pageSize: 10
-                }
+                },
+                isSend: false,
             }
         },
         components: {
@@ -38,14 +39,39 @@
         },
         methods: {
             agree(item) {
-                console.log('agree');
+                if (this.isSend) {
+                    _showError('处理中,请稍等')
+                    return;
+                }
+                this.isSend = true;
+                this.ajax.postForm('/messages/agree', {id: item.id}, (data) => {
+                    _showError('已同意')
+                    item.operation = 1;
+                    item.note = '已同意';
+                    this.isSend = false;
+                }, (err) => {
+                    this.isSend = false;
+                });
+
             },
             reject(item) {
-                console.log('reject');
+                if (this.isSend) {
+                    _showError('处理中,请稍等')
+                    return;
+                }
+                this.isSend = true;
+                this.ajax.postForm('/messages/reject', {id: item.id}, (data) => {
+                    item.operation = 1;
+                    item.note = '已拒绝';
+                    _showError('已拒绝')
+                    this.isSend = false;
+                }, (err) => {
+                    this.isSend = false;
+                });
+
             },
             page() {
-                this.ajax.get('/messages',{},(data) => {
-                    console.log(data);
+                this.ajax.get('/messages', {}, (data) => {
                     this.pageData = data;
                     this.resetScroller();
                 })
@@ -55,32 +81,36 @@
                     this.$refs.scroller.reset();
                 })
             }
+            , ...mapActions(['setActive'])
         },
         mounted() {
-           this.page();
+            this.setActive('message')
+            this.page();
         }
     }
 
 
 </script>
 <style scoped>
-    .donation{
+    .donation {
         width: 30%;
-        background-color:#704091;
+        background-color: #704091;
         color: #fff;
         font-size: 14px;
         border-radius: 5px;
         text-align: center;
         padding: 5px;
     }
-    .ipu{
+
+    .ipu {
         width: 70%;
         height: 30px;
         border-radius: 3px;
         border: 1px solid #704091;
         background-color: transparent;
     }
-    .btn{
+
+    .btn {
         width: 22%;
         background-color: #704091;
         border-radius: 5px;
@@ -92,16 +122,19 @@
         margin-left: 10px;
         line-height: 28px;
     }
-    .list{
-        border-bottom: 1px solid rgba(112,65,145,.3);
+
+    .list {
+        border-bottom: 1px solid rgba(112, 65, 145, .3);
         height: 55px;
         margin-top: 10px;
         padding-bottom: 5px;
     }
+
     .skycontent {
         font-size: 14px;
     }
-    .yes,.no{
+
+    .yes, .no {
         margin-top: 5px;
         color: rgb(255, 255, 255);
         padding: 3px;
@@ -112,9 +145,11 @@
         font-style: normal;
         display: inline-block;
     }
+
     .no {
         background-color: #586c94;
     }
+
     .img {
         width: 45px;
         height: 45px;
@@ -122,6 +157,7 @@
         float: left;
         margin-right: 10px;
     }
+
     .line-height-50 {
         line-height: 50px;
     }

@@ -1,14 +1,16 @@
 <template>
     <div style="margin: 0 auto ; width: 90% ">
         <div class="banner"></div>
-        <router-link to="/createteam" class="donation violet" style="margin-right: 5px;">创建队伍</router-link>
-        <router-link to="/jointeam" class="donation violet">加入队伍</router-link>
+        <router-link to="/createteam" :class="teamActive === 'create'?'donation-select':'donation'  " style="margin-right: 5px;">创建队伍</router-link>
+        <router-link to="/jointeam" :class="teamActive === 'join'?'donation-select':'donation'  " >加入队伍</router-link>
         <router-view></router-view>
     </div>
 </template>
 <script>
     import {Scroller} from 'vux'
     import { mapActions, mapGetters } from "vuex"
+    import {info, reg,isNull} from '../../assets/js/verification'
+    import { go, getUrl } from 'vux/src/libs/router'
     export default {
         data() {
             return {
@@ -20,20 +22,42 @@
             Scroller
         },
         computed: {
-            ...mapGetters(['user'])
+            ...mapGetters(['user','teamActive'])
         },
         methods: {
-
+            getUser() {
+                this.ajax.get('/my/user', {}, (data) => {
+                    if (!isNull(data)  &&  !isNull(data.teamId)) {
+                        go('/teanmoney',this.$router);
+                    }
+                });
+            },
         },
         mounted() {
-
+            this.getUser();
         }
     }
 
 
 </script>
 <style scoped>
+
+    .donation-select{
+        width: 44%;
+        color: #fff;
+        font-size: 14px;
+        border-radius: 5px;
+        text-align: center;
+        padding: 5px;
+        display: block;
+        float: left;
+        background-color: #dd2563;
+        box-shadow: 4px 4px 2px #888888;
+        border: 1px solid #704091;
+    }
+
     .donation{
+        background-color: #704091;
         width: 44%;
         color: #fff;
         font-size: 14px;

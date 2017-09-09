@@ -9,7 +9,6 @@ import introduce from '../views/introduce'
 import activity from '../views/activity'
 import link from '../views/link'
 import review from '../views/review'
-import love from '../views/love'
 import donation from '../views/donation/index'
 import dona from '../views/donation/donation'
 import donations from '../views/donation/donations'
@@ -24,8 +23,14 @@ import createok from '../views/createteam/createok'
 import addteam from '../views/createteam/addteam'
 import selectteam from '../views/createteam/selectteam'
 import createteamok from '../views/createteam/createteamok'
+import updateteam from '../views/createteam/updateteam'
 import teanmoney from '../views/createteam/teanmoney'
+import teaminfo from '../views/createteam/teaminfo'
 import reg from '../views/reg'
+
+const love = resolve => require(['../views/love'], resolve);
+const reviewInfo = resolve => require(['../views/review-info'], resolve);
+
 
 Vue.use(Router);
 export default new Router({
@@ -35,6 +40,7 @@ export default new Router({
             {path:'/personaldata',component:personaldata},
             {path: '/mynews',component: mynews},
             {path: '/teanmoney',component: teanmoney},
+            {path: '/updateteam',component: updateteam},
             ]},
         {path: '/statement', name: 'statement',component: statement},
         {path: '/project',name: 'project', component: project},
@@ -42,6 +48,7 @@ export default new Router({
         {path: '/activity',name: 'activity',component: activity},
         {path: '/link',name: 'link',component: link},
         {path: '/review',name: 'review',component: review},
+        {path: '/review-info',name: 'reviewInfo',component: reviewInfo},
         {path: '/love',name: 'love',component: love},
         {path: '/donation',name: 'donation',component: donation},
         {path: '/dona',component: dona},
@@ -58,7 +65,9 @@ export default new Router({
         {path: '/addteam',component: addteam},
         {path: '/selectteam',component: selectteam},
         {path: '/createteamok',component: createteamok},
+        {path: '/createteamok',component: createteamok},
         {path: '/reg',component: reg},
+        {path: '/teaminfo',component: teaminfo},
 
     ]
 })

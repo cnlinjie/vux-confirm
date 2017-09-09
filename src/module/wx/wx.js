@@ -7,6 +7,11 @@ import Axios from 'axios'
 import ajax from './assets/js/ajax'
 import 'url-search-params-polyfill';
 import './assets/css/common.css'
+import './assets/js/vendor'
+
+import  { ConfirmPlugin } from 'vux'
+Vue.use(ConfirmPlugin)
+
 
 Vue.config.productionTip = true;
 Vue.prototype.$fontSize = () => {

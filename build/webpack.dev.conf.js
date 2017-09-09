@@ -84,3 +84,6 @@ for (let pathname in pages) {
     );
     module.exports.plugins.push(new HtmlWebpackPlugin(conf));
 }
+module.exports.devServer.historyApiFallback.rewrites.push(
+    { from: new RegExp( '/wx/' + '$'), to: '/wx.html' }
+);

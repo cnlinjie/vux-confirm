@@ -5,6 +5,13 @@ const actions = {
             commit('setUser', data)
         });
     },
+    setTeam ({commit}, data) {
+        ajax.get('/my/team', {}, (data) => {
+            console.log(data);
+            commit('setTeam', data.team)
+            commit('setTeammate', data.users);
+        });
+    }
 }
 
 export default actions
